@@ -25,6 +25,19 @@
 # deterministically (resolved in Chef 11).
 node.load_attribute_by_short_filename('source', 'nginx') if node.respond_to?(:load_attribute_by_short_filename)
 
+# Attributes that reference other attributes via string interpolation/concatenation fail to honor
+# overriden attributes when defined in attribute files so they need to be set here.
+
+node.default['nginx']['source']['prefix']                  = "/opt/nginx-#{node['nginx']['source']['version']}"
+node.default['nginx']['source']['conf_path']               = "#{node['nginx']['dir']}/nginx.conf"
+node.default['nginx']['source']['sbin_path']               = "#{node['nginx']['source']['prefix']}/sbin/nginx"
+node.default['nginx']['source']['default_configure_flags'] = [
+  "--prefix=#{node['nginx']['source']['prefix']}",
+  "--conf-path=#{node['nginx']['dir']}/nginx.conf",
+  "--sbin-path=#{node['nginx']['source']['sbin_path']}"
+]
+node.default['nginx']['source']['url']      = "http://nginx.org/download/nginx-#{node['nginx']['source']['version']}.tar.gz"
+
 nginx_url = node['nginx']['source']['url'] ||
   "http://nginx.org/download/nginx-#{node['nginx']['source']['version']}.tar.gz"
 
