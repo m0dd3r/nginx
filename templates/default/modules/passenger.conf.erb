@@ -1,3 +1,5 @@
 <% @passenger_variables.each do |name, value| %>
-  passenger_<%= name %> <%= value %>;
+  <% if value %>
+    passenger_<%= name %> <%= value %>;
+  <% end %>
 <% end %>
