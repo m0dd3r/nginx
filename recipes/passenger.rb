@@ -14,6 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+if node["languages"].attribute?("ruby")
+  node.default["nginx"]["passenger"]["root"] = "#{node['languages']['ruby']['gems_dir']}/gems/passenger-#{node['nginx']['passenger']['version']}"
+  node.default["nginx"]["passenger"]["ruby"] = node['languages']['ruby']['ruby_bin']
+else
+  Chef::Log.warn("node['languages']['ruby'] attribute not detected in #{cookbook_name}::#{recipe_name}")
+  Chef::Log.warn("Install a Ruby for automatic detection of node['nginx']['passenger'] attributes (root, ruby)")
+  Chef::Log.warn("Using default values that may or may not work for this system.")
+  node.default["nginx"]["passenger"]["root"] = "/usr/lib/ruby/gems/1.8/gems/passenger-#{node['nginx']['passenger']['version']}"
+  node.default["nginx"]["passenger"]["ruby"] = "/usr/bin/ruby"
+end
 
 packages = value_for_platform( ["redhat", "centos", "scientific", "amazon", "oracle"] => {
                                  "default" => %w(ruby-devel curl-devel) },
