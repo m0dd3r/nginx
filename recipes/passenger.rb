@@ -49,7 +49,7 @@ template "#{node["nginx"]["dir"]}/conf.d/passenger.conf" do
   owner "root"
   group "root"
   mode 00644
-  variables(passenger_variables: passenger_variables)
+  variables(:passenger_variables => passenger_variables)
   notifies :reload, "service[nginx]"
 end
 
